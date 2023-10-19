@@ -19,11 +19,15 @@ def get_answer(question):
 
 @app.route('/qa', methods=['POST'])
 def add_qa():
-    # 用户可以通过 POST 请求添加新的问题和答案
-    if not request.json or 'question' not in request.json or 'answer' not in request.json:
-        return jsonify({"error": "request needs json 'question' and 'answer' parameters"}), 400
-    qa_db[request.json['question']] = request.json['answer']
-    return jsonify({"success": True, "qa": request.json}), 201
+    # 使用 try/except 进行错误处理
+    try:
+        if not request.json or 'question' not in request.json or 'answer' not in request.json:
+            return jsonify({"error": "request needs json 'question' and 'answer' parameters"}), 400
+        qa_db[request.json['question']] = request.json['answer']
+        return jsonify({"success": True, "qa": request.json}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
